@@ -7,27 +7,27 @@
         <hr />
         <p><b>Description:</b> {{ template_data.movie.description }}</p>
         <p><b>Price:</b> ${{ template_data.movie.price }}</p>
-      <p class="card-text">
- <form method="post"
- action="{% url 'cart.add' id=template_data.movie.id %}">
- <div class="row">
- {% csrf_token %}
- <div class="col-auto">
- <div class="input-group col-auto">
- <div class="input-group-text">Quantity
- </div>
- <input type="number" min="1" max="10"
- class="form-control quantity-input"
-name="quantity" value="1">
- </div>
- </div>
- <div class="col-auto">
- <button class="btn bg-dark text-white"
- type="submit">Add to cart</button>
- </div>
- </div>
- </form>
- </p>
+        <p class="card-text">
+          <form method="post"
+            action="{% url 'cart.add' id=template_data.movie.id %}">
+            <div class="row">
+              {% csrf_token %}
+              <div class="col-auto">
+                <div class="input-group col-auto">
+                  <div class="input-group-text">Quantity
+                  </div>
+                  <input type="number" min="1" max="10"
+                    class="form-control quantity-input"
+                    name="quantity" value="1">
+                </div>
+              </div>
+              <div class="col-auto">
+                <button class="btn bg-dark text-white"
+                  type="submit">Add to cart</button>
+              </div>
+            </div>
+          </form>
+        </p>
         {% if user.is_authenticated %}
         <div class="container mt-4">
           <div class="row justify-content-center">
@@ -37,8 +37,7 @@ name="quantity" value="1">
                   <b class="text-start">Create a review </b><br /><br />
                   <form
                     method="POST"
-                    action="{% url 'movies.create_review' id=template_data.movie.id %}"
-                  >
+                    action="{% url 'movies.create_review' id=template_data.movie.id %}">
                     {% csrf_token %}
                     <p>
                       <label for="comment">Comment:</label>
@@ -46,8 +45,7 @@ name="quantity" value="1">
                         name="comment"
                         required
                         class="form-control"
-                        id="comment"
-                      ></textarea>
+                        id="comment"></textarea>
                     </p>
 
                     <div class="text-center">
@@ -66,8 +64,7 @@ name="quantity" value="1">
       <div class="col-md-6 mx-auto mb-3 text-center">
         <img
           src="{{ template_data.movie.image.url }}"
-          class="rounded img-card-400"
-        />
+          class="rounded img-card-400" />
       </div>
     </div>
   </div>
