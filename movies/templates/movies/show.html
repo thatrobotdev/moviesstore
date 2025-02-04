@@ -7,6 +7,28 @@
         <hr />
         <p><b>Description:</b> {{ template_data.movie.description }}</p>
         <p><b>Price:</b> ${{ template_data.movie.price }}</p>
+        <h2>Reviews</h2>
+        <hr />
+        <ul class="list-group">
+          {% for review in template_data.reviews %}
+          <li class="list-group-item pb-3 pt-3">
+            <h5 class="card-title">
+              Review by {{ review.user.username }}
+            </h5>
+          <h6 class="card-subtitle mb-2 text-muted">
+            {{ review.date }}
+          </h6>
+          <p class="card-text">{{ review.comment }}</p>
+          {% if user.is_authenticated and user == review.user %}
+            <a class="btn btn-primary"
+            href="{% url 'movies.edit_review' id=template_data.movie.id review_id=review.id %}">Edit
+            </a>
+            <a class="btn btn-danger"
+            href="{% url 'movies.delete_review' id=template_data.movie.id review_id=review.id %}">Delete</a>
+            {% endif %}
+        </li>
+          {% endfor %}
+        </ul>
         <p class="card-text">
           <form method="post"
             action="{% url 'cart.add' id=template_data.movie.id %}">
