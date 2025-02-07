@@ -12,36 +12,36 @@
             <div class="input-group col-auto">
             <div class="input-group-text">
             Search</div>
-            <input type="text" class="form-control"
-            name="search">
+            <input type="text" class="form-control" name="search" value="{{ request.GET.search }}">
             </div>
             </div>
              <div class="col-auto">
-             <button class="btn bg-dark text-white"
-             type="submit">Search</button>
+             <button class="btn bg-dark text-white" type="submit">Search</button>
              </div>
              </div>
-             </form>
+            </form>
          </p>
       </div>
     </div>
     <div class="row">
-      {% for movie in template_data.movies %}
-      <div class="col-md-4 col-lg-3 mb-2">
-        <div class="p-2 card align-items-center pt-4">
-          <img src="{{ movie.image.url }}"
-            class="card-img-top rounded img-card-200">
-          <div class="card-body text-center">
-            <a
-              href="{% url 'movies.show' id=movie.id %}"
-              class="btn bg-dark text-white"
-            >
-              {{ movie.name }}
-            </a>
+      {% if template_data.movies.exists %}
+        {% for movie in template_data.movies %}
+          <div class="col-md-4 col-lg-3 mb-2">
+            <div class="p-2 card align-items-center pt-4">
+              <img src="{{ movie.image.url }}" class="card-img-top rounded img-card-200">
+              <div class="card-body text-center">
+                <a href="{% url 'movies.show' id=movie.id %}" class="btn bg-dark text-white">
+                  {{ movie.name }}
+                </a>
+              </div>
+            </div>
           </div>
+        {% endfor %}
+      {% else %}
+        <div class="col-12 text-center">
+          <p>We're sorry but it looks like we don't carry that title!</p>
         </div>
-      </div>
-      {% endfor %}
+      {% endif %}
     </div>
   </div>
 </div>
