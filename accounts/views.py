@@ -6,6 +6,27 @@ from .forms import CustomUserCreationForm, CustomErrorList
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
+def login_view(request):
+    context = {}
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            request.session['failed_attempts'] = 0
+            return redirect('orders')
+        else:
+            # Increment a counter for failed attempts
+            failed_attempts = request.session.get('failed_attempts', 0) + 1
+            request.session['failed_attempts'] = failed_attempts
+            context['error'] = "Invalid username or password."
+            # When there is at least one failed attempt, add the flag
+            if failed_attempts >= 1:
+                context['login_failed'] = True
+
+    return render(request, 'login.html', {'template_data': context})
+
 @login_required
 def logout(request):
     auth_logout(request)
