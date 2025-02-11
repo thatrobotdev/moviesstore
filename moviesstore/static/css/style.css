@@ -15,19 +15,20 @@
 }
 .ms-footer p {
   color: #7f7f7f;
-  font-size: 13px;
+  font-size: 10px;
 }
 .ms-footer a:hover {
   color: #6ab43e;
   text-decoration: none;
 }
 .ms-footer-bottom span {
-  font-size: 13px;
+  font-size: 10px;
   line-height: 38px;
 }
 .ms-footer-bottom a {
   color: #6ab43e;
   text-decoration: none;
+  font-size: 9px !important;
 }
 .ms-footer-bottom a:hover {
   color: #fff;
