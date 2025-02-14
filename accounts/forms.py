@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.forms.utils import ErrorList
 from django.utils.safestring import mark_safe
+from .models import Profile
 
 class CustomErrorList(ErrorList):
     def __str__(self):
@@ -33,11 +34,6 @@ class CustomUserCreationForm(UserCreationForm):
     def save(self, commit=True):
         user = super(CustomUserCreationForm, self).save(commit)
         security_answer = self.cleaned_data.get('security_answer')
-        # Store the security answer somewhere.
-        # For example, if you have a Profile model linked to the User:
-        #
-        # from .models import Profile
-        # Profile.objects.create(user=user, security_answer=security_answer)
-        #
-        # Alternatively, if you're using a custom User model, add a field for it there.
+        # Store the security answer in the Profile model
+        profile = Profile.objects.create(user=user, security_answer=security_answer)
         return user
