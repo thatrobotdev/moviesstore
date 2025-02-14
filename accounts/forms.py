@@ -14,7 +14,7 @@ class CustomErrorList(ErrorList):
 
 class CustomUserCreationForm(UserCreationForm):
     # Add a new field for the security answer.
-    security_answer = forms.CharField(
+    maiden_name = forms.CharField(
         required=True,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         label="What is your mother's maiden name? (Case sensitive)"
@@ -22,18 +22,18 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         # Include the new field in the form’s fields list.
-        fields = UserCreationForm.Meta.fields + ('security_answer',)
+        fields = UserCreationForm.Meta.fields + ('maiden_name',)
 
     def __init__(self, *args, **kwargs):
         super(CustomUserCreationForm, self).__init__(*args, **kwargs)
         # Apply styling and remove help texts for consistency.
-        for fieldname in ['username', 'password1', 'password2', 'security_answer']:
+        for fieldname in ['username', 'password1', 'password2', 'maiden_name']:
             self.fields[fieldname].help_text = None
             self.fields[fieldname].widget.attrs.update({'class': 'form-control'})
 
     def save(self, commit=True):
         user = super(CustomUserCreationForm, self).save(commit)
-        security_answer = self.cleaned_data.get('security_answer')
+        maiden_name = self.cleaned_data.get('maiden_name')
         # Store the security answer in the Profile model
-        profile = Profile.objects.create(user=user, security_answer=security_answer)
+        profile = Profile.objects.create(user=user, maiden_name=maiden_name)
         return user
