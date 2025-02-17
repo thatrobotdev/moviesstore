@@ -8,6 +8,7 @@ class Movie(models.Model):
     price = models.IntegerField()
     description = models.TextField()
     image = models.ImageField(upload_to='movie_images/')
+    trailer_youtube_id = models.CharField(max_length=11)
     
     def __str__(self):
         return str(self.id) + ' - ' + self.name

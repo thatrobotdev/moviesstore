@@ -1,94 +1,124 @@
 {% extends 'base.html' %} {% block content %} {% load static %}
-<div class="p-3">
-  <div class="container">
-    <div class="row mt-3">
-      <div class="col-md-6 mx-auto mb-3">
-        <h2>{{ template_data.movie.name }}</h2>
-        <hr />
-        <p><b>Description:</b> {{ template_data.movie.description }}</p>
-        <p><b>Price:</b> ${{ template_data.movie.price }}</p>
-        <h2>Reviews</h2>
-        <hr />
-        <ul class="list-group">
-          {% for review in template_data.reviews %}
-          <li class="list-group-item pb-3 pt-3">
-            <h5 class="card-title">
-              Review by {{ review.user.username }}
-            </h5>
-          <h6 class="card-subtitle mb-2 text-muted">
-            {{ review.date }}
-          </h6>
-          <p class="card-text">{{ review.comment }}</p>
-          {% if user.is_authenticated and user == review.user %}
-            <a class="btn btn-primary"
-            href="{% url 'movies.edit_review' id=template_data.movie.id review_id=review.id %}">Edit
-            </a>
-            <a class="btn btn-danger"
-            href="{% url 'movies.delete_review' id=template_data.movie.id review_id=review.id %}">Delete</a>
-            {% endif %}
-        </li>
-          {% endfor %}
-        </ul>
-        <p class="card-text">
-          <form method="post"
-            action="{% url 'cart.add' id=template_data.movie.id %}">
-            <div class="row">
-              {% csrf_token %}
-              <div class="col-auto">
-                <div class="input-group col-auto">
-                  <div class="input-group-text">Quantity
-                  </div>
-                  <input type="number" min="1" max="10"
-                    class="form-control quantity-input"
-                    name="quantity" value="1">
+    <div class="p-3">
+        <div class="container">
+            <div class="row mt-3">
+                <div class="col-md-6 mx-auto mb-3">
+                    <h2>{{ template_data.movie.name }}</h2>
+                    <hr/>
+                    <p><b>Description:</b> {{ template_data.movie.description }}</p>
+                    <p><b>Price:</b> ${{ template_data.movie.price }}</p>
+                    <form method="post"
+                          action="{% url 'cart.add' id=template_data.movie.id %}" class="my-3">
+                        <div class="row">
+                            {% csrf_token %}
+                            <div class="col-auto">
+                                <div class="input-group col-auto">
+                                    <label for="quantity" class="input-group-text">Quantity
+                                    </label>
+                                    <input type="number" min="1" max="10"
+                                           class="form-control quantity-input"
+                                           id="quantity" name="quantity" value="1">
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn bg-dark text-white"
+                                        type="submit">Add to cart
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <h2>Reviews</h2>
+                    <hr/>
+                    <ul class="list-group">
+                        {% if not template_data.reviews and not user.is_authenticated %}
+                            <li class="list-group-item pb-3 pt-3">
+                                No reviews yet. <a href={% url 'accounts.login' %}>Log in</a> or <a
+                                    href={% url 'accounts.signup' %}>sign up</a> to be the first to write one!
+                            </li>
+                        {% endif %}
+                        {% for review in template_data.reviews %}
+                            <li class="list-group-item pb-3 pt-3">
+                                <h5 class="card-title">
+                                    Review by {{ review.user.username }}
+                                </h5>
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    {{ review.date }}
+                                </h6>
+                                <p class="card-text">{{ review.comment }}</p>
+                                {% if user.is_authenticated and user == review.user %}
+                                    <a class="btn btn-primary"
+                                       href="{% url 'movies.edit_review' id=template_data.movie.id review_id=review.id %}">Edit
+                                    </a>
+                                    <a class="btn btn-danger"
+                                       href="{% url 'movies.delete_review' id=template_data.movie.id review_id=review.id %}">Delete</a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    {% if user.is_authenticated %}
+                        <div class="container mt-4">
+                            <div class="row justify-content-center">
+                                <div class="col-12">
+                                    <div class="card shadow p-3 mb-4 rounded">
+                                        <div class="card-body">
+                                            <b class="text-start">Create a review </b><br/><br/>
+                                            <form
+                                                    method="POST"
+                                                    action="{% url 'movies.create_review' id=template_data.movie.id %}">
+                                                {% csrf_token %}
+                                                <p>
+                                                    <label for="comment">Comment:</label>
+                                                    <textarea
+                                                            name="comment"
+                                                            required
+                                                            class="form-control"
+                                                            id="comment"></textarea>
+                                                </p>
+                                                <div class="text-center">
+                                                    <button type="submit" class="btn bg-dark text-white">
+                                                        Add Review
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
-              </div>
-              <div class="col-auto">
-                <button class="btn bg-dark text-white"
-                  type="submit">Add to cart</button>
-              </div>
-            </div>
-          </form>
-        </p>
-        {% if user.is_authenticated %}
-        <div class="container mt-4">
-          <div class="row justify-content-center">
-            <div class="col-12">
-              <div class="card shadow p-3 mb-4 rounded">
-                <div class="card-body">
-                  <b class="text-start">Create a review </b><br /><br />
-                  <form
-                    method="POST"
-                    action="{% url 'movies.create_review' id=template_data.movie.id %}">
-                    {% csrf_token %}
-                    <p>
-                      <label for="comment">Comment:</label>
-                      <textarea
-                        name="comment"
-                        required
-                        class="form-control"
-                        id="comment"></textarea>
-                    </p>
-
-                    <div class="text-center">
-                      <button type="submit" class="btn bg-dark text-white">
-                        Add Review
-                      </button>
+                <!-- Movie Poster + Trailer Carousel -->
+                <div class="col-md-6 mx-auto mb-3 text-center h-100">
+                    <!-- Carousel -->
+                    <div id="carouselExampleIndicators" class="carousel slide">
+                        <div class="carousel-inner">
+                            <!-- Movie Poster -->
+                            <div class="carousel-item active">
+                                <img src="{{ template_data.movie.image.url }}" class="block rounded img-card-400"
+                                     alt="{{ template_data.movie.name }} poster.">
+                            </div>
+                            <!-- Trailer -->
+                            <div class="carousel-item video-container">
+                                <iframe width="560" height="315"
+                                        src="https://www.youtube-nocookie.com/embed/{{ template_data.movie.trailer_youtube_id }}?&amp;controls=0"
+                                        title="YouTube video player"
+                                        allow="clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                                <p>Video</p>
+                            </div>
+                        </div>
                     </div>
-                  </form>
+                    <!-- Carousel Control Buttons -->
+                    <div class="d-grid gap-2 d-md-block mt-2">
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
+                                class="btn btn-outline-primary btn-sm" aria-current="true" aria-label="Poster">Poster
+                        </button>
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
+                                class="btn btn-outline-info btn-sm" aria-label="Trailer">Trailer
+                        </button>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
-        {% endif %}
-      </div>
-      <div class="col-md-6 mx-auto mb-3 text-center">
-        <img
-          src="{{ template_data.movie.image.url }}"
-          class="rounded img-card-400" />
-      </div>
     </div>
-  </div>
-</div>
 {% endblock content %}
